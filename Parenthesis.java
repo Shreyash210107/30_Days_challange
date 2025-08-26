@@ -1,39 +1,30 @@
-import java.util.Stack;
+import java.util.Deque;
+import java.util.ArrayDeque;
+import java.util.HashMap;
 
-public class Parenthesis 
-{
-    public static boolean isValid(String s) 
-   {
-        Stack<Character> stack = new Stack<>();
+class Solution {
+    /**
+     * Checks if a string has valid parentheses.
+     * Only (), {}, and [] are considered valid pairs.
+     *
+     * @param s the input string
+     * @return true if valid, false otherwise
+     */
+    public boolean isValid(String s) {
+        Deque<Character> stack = new ArrayDeque<>();
 
-        for (char ch : s.toCharArray()) 
-      {
-           
-            if (ch == '(' || ch == '{' || ch == '[') 
-       {
-                stack.push(ch);
-        } else 
-       {
-               
-                if (stack.isEmpty()) return false;
+        HashMap<Character, Character> bracketMap = new HashMap<>();
+        bracketMap.put(')', '(');
+        bracketMap.put('}', '{');
+        bracketMap.put(']', '[');
 
-                char top = stack.pop();
-                if ((ch == ')' && top != '(') ||
-                    (ch == '}' && top != '{') ||
-                    (ch == ']' && top != '['))
-         {
+        for (char c : s.toCharArray()) {
+            if (bracketMap.containsKey(c)) {
+                // Closing bracket: must match the top of the stack
+                if (stack.isEmpty() || stack.pop() != bracketMap.get(c)) {
                     return false;
-         }
-       }
-     }
-
-        
-        return stack.isEmpty();
-    }
-
-    public static void main(String[] args)
-    {
-        String s = "[{()}]";
-        System.out.println(isValid(s));  
-    }
-}
+                }
+            } else if (bracketMap.containsValue(c)) {
+                // Opening bracket
+                stack.push(c);
+            } else {
